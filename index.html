@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Idea Machine — App Idea Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: 'Space Mono', monospace;
+        background: #0a0908;
+        min-height: 100vh;
+      }
+      .font-display { font-family: 'Syne', sans-serif; }
+      
+      /* CRT Scanlines */
+      .scanlines::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.15),
+          rgba(0, 0, 0, 0.15) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+        pointer-events: none;
+        z-index: 1000;
+      }
+      
+      /* Noise texture */
+      .noise::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 999;
+      }
+      
+      /* Glow effects */
+      .glow-orange {
+        box-shadow: 0 0 20px rgba(255, 140, 50, 0.4),
+                    0 0 40px rgba(255, 140, 50, 0.2),
+                    0 0 60px rgba(255, 140, 50, 0.1);
+      }
+      
+      .glow-amber {
+        box-shadow: 0 0 15px rgba(251, 191, 36, 0.3),
+                    0 0 30px rgba(251, 191, 36, 0.15);
+      }
+      
+      .text-glow {
+        text-shadow: 0 0 10px currentColor,
+                     0 0 20px currentColor,
+                     0 0 40px currentColor;
+      }
+      
+      /* Card animations */
+      @keyframes dispense {
+        0% {
+          transform: translateY(-100%) rotateX(90deg);
+          opacity: 0;
+        }
+        50% {
+          transform: translateY(10%) rotateX(-10deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(0) rotateX(0deg);
+          opacity: 1;
+        }
+      }
+      
+      @keyframes slideOut {
+        0% {
+          transform: translateX(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-120%) scale(0.8) rotate(-5deg);
+          opacity: 0;
+        }
+      }
+      
+      .card-dispense {
+        animation: dispense 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+      
+      .card-exit {
+        animation: slideOut 0.4s ease-in forwards;
+      }
+      
+      /* Button press effect */
+      .btn-press:active {
+        transform: scale(0.95) translateY(2px);
+      }
+      
+      /* Slot machine lever */
+      @keyframes leverPull {
+        0% { transform: rotate(0deg); }
+        50% { transform: rotate(45deg); }
+        100% { transform: rotate(0deg); }
+      }
+      
+      .lever-pull {
+        animation: leverPull 0.5s ease-in-out;
+      }
+      
+      /* Floating animation */
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      .float {
+        animation: float 4s ease-in-out infinite;
+      }
+      
+      /* Pulsing ring */
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+      }
+      
+      .pulse-ring {
+        animation: pulse-ring 2s ease-in-out infinite;
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a1816;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ff8c32;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #fbbf24;
+      }
+      
+      /* Grid pattern */
+      .grid-pattern {
+        background-image: 
+          linear-gradient(rgba(255, 140, 50, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 140, 50, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+    </style>
+  </head>
+  <body class="scanlines noise">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
